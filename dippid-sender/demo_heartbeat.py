@@ -7,4 +7,8 @@ sensor = SensorUDP(PORT)
 def handle_hearbeat(data):
     print(data)
 
+def handle_accelerometer(data):
+    print(data)
+
 sensor.register_callback('heartbeat', handle_hearbeat)
+sensor.register_callback('accelerometer', handle_accelerometer)
