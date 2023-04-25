@@ -18,6 +18,13 @@ def get_sine_of_random_degree():
     radiant_of_degree = np.radians(random_degree)
     return np.sin(radiant_of_degree)
 
+def get_random_button_one_press_event():
+    random_number = np.random.randint(1,100)
+    if random_number % 2 != 0 :
+        return 0
+    else:
+        return 1
+
 while True:
     # create messages
     message = '{"heartbeat" : ' + str(counter) + '}'
@@ -25,14 +32,18 @@ while True:
     message_accelerometer = '{"accelerometer" : {"x" : ' + str(get_sine_of_random_degree()) + \
         ', "y" : '  + str(get_sine_of_random_degree()) + \
             ', "z" : '  + str(get_sine_of_random_degree()) + '}' + '}'
+            
+    message_button_1 = '{"button_1" : ' + str(get_random_button_one_press_event()) + '}'
     
     # send messages
-    sock.sendto(message_accelerometer.encode(), (IP, PORT))
     sock.sendto(message.encode(), (IP, PORT))
+    sock.sendto(message_accelerometer.encode(), (IP, PORT))
+    sock.sendto(message_button_1.encode(), (IP, PORT))
     
     # check messages
     print(message_accelerometer)
     print(message)
+    print(message_button_1)
 
     counter += 1
     time.sleep(1)
