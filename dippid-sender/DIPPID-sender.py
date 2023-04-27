@@ -18,6 +18,8 @@ def get_sine_of_random_degree():
     radiant_of_degree = np.radians(random_degree)
     return np.sin(radiant_of_degree)
 
+# generate randomly the number 0 or 1
+# in demo_heartbeat.py this numbers get interpreted as "0 = button 1 was pressed" and "1 = button 1 was released"
 def get_random_button_one_press_event():
     random_number = np.random.randint(1,100)
     if random_number % 2 != 0 :
@@ -46,6 +48,10 @@ while True:
     print(message_button_1)
 
     counter += 1
+    # slower clock for testing purposes
     time.sleep(1)
+    
+    # For the current use of the acceloremeter, a faster clock would make more sense
+    # time.sleep(0.1)
     
     
