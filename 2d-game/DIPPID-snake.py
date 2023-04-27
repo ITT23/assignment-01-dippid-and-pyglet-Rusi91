@@ -24,7 +24,7 @@ snake_y_pos = WINDOW_HEIGHT / 2
 # snake movement
 snake_x_movement = 0.0
 snake_y_movement = 0.0
-snake_speed_multiplier = 2
+snake_speed_multiplier = 5
 
 
 def handle_accelerometer(data):
@@ -52,11 +52,22 @@ def draw_snake():
     # draw the snakehead in a specific point of the window
     snake_img.blit(snake_x_pos, snake_y_pos)
     
-def update_snake_pos():
+def update_snake_pos(dt):
     global snake_x_movement, snake_y_movement, snake_x_pos, snake_y_pos
     
-    snake_x_pos -= snake_x_movement * snake_speed_multiplier
-    snake_y_pos += snake_y_movement * snake_speed_multiplier
+    if snake_x_pos >= WINDOW_WIDTH:
+        snake_x_pos = SNAKE_CELL_SIZE
+    if snake_x_pos <= 0:
+        snake_x_pos = WINDOW_WIDTH - SNAKE_CELL_SIZE
+    if snake_y_pos >= WINDOW_HEIGHT:
+        snake_y_pos = SNAKE_CELL_SIZE
+    if snake_y_pos <= 0:
+        snake_y_pos = WINDOW_HEIGHT - SNAKE_CELL_SIZE
+    else:
+        snake_x_pos -= snake_x_movement * snake_speed_multiplier
+        snake_y_pos += snake_y_movement * snake_speed_multiplier
+        
+        print(snake_x_movement)
     
 def get_random_food_color():
     # avoid black (0,0,0,0) because of black background
