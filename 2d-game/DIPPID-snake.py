@@ -1,5 +1,6 @@
 from pyglet import app, image, clock
 from pyglet.window import Window
+import numpy as np
 
 from DIPPID import SensorUDP
 from time import sleep
@@ -23,14 +24,13 @@ snake_y_pos = WINDOW_HEIGHT / 2
 # snake movement
 snake_x_movement = 0.0
 snake_y_movement = 0.0
+snake_speed_multiplier = 2
+
 
 def handle_accelerometer(data):
-    if(sensor.has_capability('accelerometer')):
-        global snake_x_movement, snake_y_movement
-        # print only one accelerometer axis x
-        snake_x_movement = sensor.get_value('accelerometer')['x']
-        snake_y_movement = sensor.get_value('accelerometer')['y']
-        print(snake_x_movement)
+    global snake_x_movement, snake_y_movement
+    snake_x_movement = data['x']
+    snake_y_movement = data['z']
     
 
 sensor.register_callback('accelerometer', handle_accelerometer)
@@ -52,14 +52,22 @@ def draw_snake():
     # draw the snakehead in a specific point of the window
     snake_img.blit(snake_x_pos, snake_y_pos)
     
-def update_snake_pos(dt):
+def update_snake_pos():
     global snake_x_movement, snake_y_movement, snake_x_pos, snake_y_pos
     
-    snake_x_pos += snake_y_movement * 10
-    snake_y_pos += snake_x_movement 
+    snake_x_pos -= snake_x_movement * snake_speed_multiplier
+    snake_y_pos += snake_y_movement * snake_speed_multiplier
+    
+def get_random_food_color():
+    # avoid black (0,0,0,0) because of black background
+    r = np.random.randint(50,255)
+    g = np.random.randint(50,255)
+    b = np.random.randint(50,255)
+    
+    return (r,g,b,0)
 
 # set update interval
-clock.schedule_interval(update_snake_pos, 0.5)
+clock.schedule_interval(update_snake_pos, 0.1)
 
 
 
