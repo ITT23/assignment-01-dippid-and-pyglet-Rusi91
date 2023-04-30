@@ -1,5 +1,6 @@
 from pyglet import app, image, clock
 from pyglet.window import Window
+import pyglet
 import numpy as np
 
 from DIPPID import SensorUDP
@@ -40,6 +41,10 @@ for x in range(rockets_number):
     rockets_arr[x].append(np.random.randint(0, WINDOW_WIDTH - ROCKET_WIDTH))
     rockets_arr[x].append(WINDOW_HEIGHT - ROCKET_HEIGHT)
     rockets_arr[x].append(np.random.randint(1,10))
+    
+    
+player_lifes_remaining = 5
+player_lifes_max = 10
 
 
 def handle_accelerometer(data):
@@ -62,6 +67,8 @@ def on_draw():
     
     draw_rockets()
     
+    draw_lifes()
+    
 # draw snake
 def draw_ship():
     global rocket_arr
@@ -77,6 +84,15 @@ def draw_rockets():
     for x in range(rockets_number):
         rocket = image.create(ROCKET_WIDTH, ROCKET_HEIGHT, image.SolidColorImagePattern(ROCKET_COLOR))
         rocket.blit(rockets_arr[x][0], rockets_arr[x][1])
+        
+def draw_lifes():
+    player_lifes = pyglet.text.Label(str(player_lifes_remaining),
+                          font_name='Times New Roman',
+                          font_size=40,
+                          x = WINDOW_WIDTH - WINDOW_WIDTH / 20, y = WINDOW_HEIGHT - WINDOW_HEIGHT / 20,
+                          anchor_x='center', anchor_y='center')
+    
+    player_lifes.draw()
     
     
 def update_ship_pos(dt):
@@ -87,17 +103,19 @@ def update_ship_pos(dt):
     if ship_x_pos <= 0:
         ship_x_pos = WINDOW_WIDTH - SHIP_WIDTH
     else:
-        ship_x_pos -= ship_x_movement * ship_speed_multiplier
+        ship_x_pos += ship_x_movement * ship_speed_multiplier
         #snake_y_pos += snake_y_movement * snake_speed_multiplier
         print(ship_x_movement)
         
 def update_rockets_pos(dt):
     
     for x in range(rockets_number):
+        global player_lifes_remaining
         if rockets_arr[x][1] <= 0:
-            rockets_arr[x][0] = get_random_rocket_x_pos()
-            rockets_arr[x][1] = WINDOW_HEIGHT - ROCKET_HEIGHT
-            rockets_arr[x][2] = get_random_rocket_speed_multiplier()
+            reset_rocket(x)
+        if rockets_arr[x][0] >= ship_x_pos and rockets_arr[x][0] <= ship_x_pos + SHIP_WIDTH and rockets_arr[x][1] <= SHIP_Y_POS + SHIP_HEIGHT:
+            player_lifes_remaining -= 1
+            reset_rocket(x)
         else:
             rockets_arr[x][1] -= 0.5 * rockets_arr[x][2]
         
@@ -115,6 +133,11 @@ def get_random_rocket_x_pos():
 
 def get_random_rocket_speed_multiplier():
     return np.random.randint(1, 10)
+
+def reset_rocket(rocket_index):
+    rockets_arr[rocket_index][0] = get_random_rocket_x_pos()
+    rockets_arr[rocket_index][1] = WINDOW_HEIGHT - ROCKET_HEIGHT
+    rockets_arr[rocket_index][2] = get_random_rocket_speed_multiplier()
 
 # set update interval
 clock.schedule_interval(update_ship_pos, 0.1)
