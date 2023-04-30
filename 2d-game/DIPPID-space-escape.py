@@ -20,6 +20,8 @@ SHIP_WIDTH = 20
 SHIP_HEIGHT = 40
 SHIP_Y_POS = SHIP_HEIGHT / 2
 
+BACKGROUND_MUSIC_PATH = '2d-game\\music\\background_music.mp3'
+
 # snake position
 ship_x_pos = WINDOW_WIDTH / 2
 
@@ -117,8 +119,15 @@ def handle_accelerometer(data):
 
 sensor.register_callback('accelerometer', handle_accelerometer)
 
+# David_Jones - https://stackoverflow.com/questions/27391240/how-to-play-music-continuously-in-pyglet [30.04.23]
 # create game window
 window = Window(WINDOW_WIDTH, WINDOW_HEIGHT)
+
+# create a player and queue the song
+music_player = pyglet.media.Player()
+background_music = pyglet.media.load(BACKGROUND_MUSIC_PATH)
+music_player.queue(background_music) 
+music_player.play()
 
 @window.event
 def on_draw():
