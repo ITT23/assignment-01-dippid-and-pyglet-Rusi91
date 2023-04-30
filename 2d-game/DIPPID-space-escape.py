@@ -32,13 +32,14 @@ ROCKET_WIDTH = 10
 ROCKET_HEIGHT = 20
 ROCKET_COLOR = (255, 0, 0, 0) # red
 
-rocket_1_x_pos = np.random.randint(0, WINDOW_WIDTH - ROCKET_WIDTH)
-rocket_2_x_pos = np.random.randint(0, WINDOW_WIDTH - ROCKET_WIDTH)
-rocket_3_x_pos = np.random.randint(0, WINDOW_WIDTH - ROCKET_WIDTH)
+rockets_number = 10
+rockets_arr = []
 
-rocket_1_y_pos = WINDOW_HEIGHT - ROCKET_HEIGHT
-rocket_2_y_pos = WINDOW_HEIGHT - ROCKET_HEIGHT
-rocket_3_y_pos = WINDOW_HEIGHT - ROCKET_HEIGHT
+for x in range(rockets_number):
+    rockets_arr.append([])
+    rockets_arr[x].append(np.random.randint(0, WINDOW_WIDTH - ROCKET_WIDTH))
+    rockets_arr[x].append(WINDOW_HEIGHT - ROCKET_HEIGHT)
+    rockets_arr[x].append(np.random.randint(1,10))
 
 
 def handle_accelerometer(data):
@@ -59,6 +60,8 @@ def on_draw():
     # draw snake
     draw_ship()
     
+    draw_rockets()
+    
 # draw snake
 def draw_ship():
     global rocket_arr
@@ -66,17 +69,14 @@ def draw_ship():
     #snake_img = image.create(SNAKE_CELL_SIZE, SNAKE_CELL_SIZE, image.SolidColorImagePattern(SNAKE_COLOR))
     ship_img = image.create(SHIP_WIDTH, SHIP_HEIGHT, image.SolidColorImagePattern(get_random_ship_color()))
     
-    rocket_1 = image.create(ROCKET_WIDTH, ROCKET_HEIGHT, image.SolidColorImagePattern(ROCKET_COLOR))
-    rocket_2 = image.create(ROCKET_WIDTH, ROCKET_HEIGHT, image.SolidColorImagePattern(ROCKET_COLOR))
-    rocket_3 = image.create(ROCKET_WIDTH, ROCKET_HEIGHT, image.SolidColorImagePattern(ROCKET_COLOR))
-    
     # draw the snakehead in a specific point of the window
     ship_img.blit(ship_x_pos, SHIP_Y_POS)
-    
-    rocket_1.blit(rocket_1_x_pos, rocket_1_y_pos)
-    rocket_2.blit(rocket_2_x_pos, rocket_2_y_pos)
-    rocket_3.blit(rocket_3_x_pos, rocket_3_y_pos)
     # draw rockets
+    
+def draw_rockets():
+    for x in range(rockets_number):
+        rocket = image.create(ROCKET_WIDTH, ROCKET_HEIGHT, image.SolidColorImagePattern(ROCKET_COLOR))
+        rocket.blit(rockets_arr[x][0], rockets_arr[x][1])
     
     
 def update_ship_pos(dt):
@@ -91,6 +91,16 @@ def update_ship_pos(dt):
         #snake_y_pos += snake_y_movement * snake_speed_multiplier
         print(ship_x_movement)
         
+def update_rockets_pos(dt):
+    
+    for x in range(rockets_number):
+        if rockets_arr[x][1] <= 0:
+            rockets_arr[x][0] = get_random_rocket_x_pos()
+            rockets_arr[x][1] = WINDOW_HEIGHT - ROCKET_HEIGHT
+            rockets_arr[x][2] = get_random_rocket_speed_multiplier()
+        else:
+            rockets_arr[x][1] -= 0.5 * rockets_arr[x][2]
+        
     
 def get_random_ship_color():
     # avoid black (0,0,0,0) because of black background
@@ -103,8 +113,12 @@ def get_random_ship_color():
 def get_random_rocket_x_pos():
     return np.random.randint(ROCKET_WIDTH, WINDOW_WIDTH - ROCKET_WIDTH)
 
+def get_random_rocket_speed_multiplier():
+    return np.random.randint(1, 10)
+
 # set update interval
 clock.schedule_interval(update_ship_pos, 0.1)
+clock.schedule_interval(update_rockets_pos, 0.1)
 
 
 
