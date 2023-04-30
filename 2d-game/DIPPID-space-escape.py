@@ -23,6 +23,7 @@
 # - background music
 #
 # DIPPID-CONTROLLER
+# - THE SMARTPHONE MUST BE HELD HORIZONTALLY FOR THE CONTROL.
 # - the accelerometer is used 
 # - y-value -> player movement
 # - z-value -> restart game (turn the smartphone upside down / display towards the ground)
