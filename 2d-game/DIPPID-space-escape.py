@@ -33,7 +33,7 @@ ROCKET_WIDTH = 10
 ROCKET_HEIGHT = 20
 ROCKET_COLOR = (255, 0, 0, 0) # red
 
-rockets_number = 10
+rockets_number = 15
 rockets_arr = []
 
 for x in range(rockets_number):
@@ -45,6 +45,8 @@ for x in range(rockets_number):
     
 player_lifes_remaining = 5
 player_lifes_max = 10
+
+player_points = 0
 
 
 def handle_accelerometer(data):
@@ -68,6 +70,8 @@ def on_draw():
     draw_rockets()
     
     draw_lifes()
+    
+    draw_points()
     
 # draw snake
 def draw_ship():
@@ -94,6 +98,16 @@ def draw_lifes():
     
     player_lifes.draw()
     
+def draw_points():
+    
+    player_points_count = pyglet.text.Label("points: " + str(player_points),
+                          font_name='Times New Roman',
+                          font_size=20,
+                          x = WINDOW_WIDTH / 10, y = WINDOW_HEIGHT / 20,
+                          anchor_x='center', anchor_y='center')
+    
+    player_points_count.draw()
+    
     
 def update_ship_pos(dt):
     global ship_x_movement, ship_x_pos
@@ -110,9 +124,10 @@ def update_ship_pos(dt):
 def update_rockets_pos(dt):
     
     for x in range(rockets_number):
-        global player_lifes_remaining
+        global player_lifes_remaining, player_points
         if rockets_arr[x][1] <= 0:
             reset_rocket(x)
+            player_points += 1
         if rockets_arr[x][0] >= ship_x_pos and rockets_arr[x][0] <= ship_x_pos + SHIP_WIDTH and rockets_arr[x][1] <= SHIP_Y_POS + SHIP_HEIGHT:
             player_lifes_remaining -= 1
             reset_rocket(x)
