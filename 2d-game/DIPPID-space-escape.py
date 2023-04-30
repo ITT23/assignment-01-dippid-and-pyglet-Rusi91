@@ -290,7 +290,8 @@ def update_rockets_pos(dt):
         # if rocket finished without hitting the player
         if rockets_arr[x][1] <= 0:
             reset_rocket(x)
-            player_points += 1
+            if not game_over:
+                player_points += 1
         # if rocket hit the player
         if rockets_arr[x][0] >= ship_x_pos and rockets_arr[x][0] <= ship_x_pos + SHIP_WIDTH and \
             rockets_arr[x][1] <= SHIP_Y_POS + SHIP_HEIGHT:
